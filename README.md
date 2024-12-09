@@ -1,4 +1,4 @@
-#Salary speed and Grade Calculation System
+# Salary speed and Grade Calculation System
 
 This repository contains three JavaScript programs with different functionalities:
 
