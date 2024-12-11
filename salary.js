@@ -1,4 +1,10 @@
-// tax (PAYE)
+const readline = require('readline');
+
+const rl = readline.createInterface({
+    input: process.stdin,
+    output: process.stdout
+});
+
 function calculateTax(grossIncome) {
     let tax = 0;
     if (grossIncome <= 24000) {
@@ -11,7 +17,6 @@ function calculateTax(grossIncome) {
     return tax;
 }
 
-//NHIF deductions
 function calculateNHIF(grossIncome) {
     if (grossIncome <= 5999) return 150;
     if (grossIncome <= 7999) return 300;
@@ -22,42 +27,50 @@ function calculateNHIF(grossIncome) {
     if (grossIncome <= 29999) return 850;
     if (grossIncome <= 34999) return 900;
     if (grossIncome <= 39999) return 950;
-    return 1000;
-  
+    if (grossIncome <= 44999) return 1000;
+    if (grossIncome <= 49999) return 1100;
+    if (grossIncome <= 59999) return 1200;
+    if (grossIncome <= 69999) return 1300;
+    if (grossIncome <= 79999) return 1400;
+    if (grossIncome <= 89999) return 1500;
+    if (grossIncome <= 99999) return 1600;
+    return 1700;
 }
 
-//NSSF deductions
 function calculateNSSF(grossIncome) {
     const tier1 = Math.min(grossIncome, 6000) * 0.06;
     const tier2 = Math.max(0, Math.min(grossIncome - 6000, 12000)) * 0.06;
     return tier1 + tier2;
 }
 
-// net salary
-function calculateNetSalary(basicSalary, benefits) {
-    const grossIncome = basicSalary + benefits;
-    const payeeTax = calculateTax(grossIncome);
-    const nhifDeduction = calculateNHIF(grossIncome);
-    const nssfDeduction = calculateNSSF(grossIncome);
+function calculateNetSalary() {
+    rl.question("Enter the basic salary: ", (basicSalaryInput) => {
+        rl.question("Enter the benefits: ", (benefitsInput) => {
+            const basicSalary = parseFloat(basicSalaryInput);
+            const benefits = parseFloat(benefitsInput);
 
-    const netSalary = grossIncome - payeeTax - nhifDeduction - nssfDeduction;
+            if (isNaN(basicSalary) || isNaN(benefits) || basicSalary < 0 || benefits < 0) {
+                console.log("Invalid input. Please enter positive numbers for basic salary and benefits.");
+                calculateNetSalary();
+                return;
+            }
 
-    return {
-        grossIncome,
-        payeeTax,
-        nhifDeduction,
-        nssfDeduction,
-        netSalary,
-    };
+            const grossIncome = basicSalary + benefits;
+            const payeeTax = calculateTax(grossIncome);
+            const nhifDeduction = calculateNHIF(grossIncome);
+            const nssfDeduction = calculateNSSF(grossIncome);
+
+            const netSalary = grossIncome - payeeTax - nhifDeduction - nssfDeduction;
+
+            console.log(`\nGross Income: KES ${grossIncome.toFixed(2)}`);
+            console.log(`PAYE Tax: KES ${payeeTax.toFixed(2)}`);
+            console.log(`NHIF Deduction: KES ${nhifDeduction.toFixed(2)}`);
+            console.log(`NSSF Deduction: KES ${nssfDeduction.toFixed(2)}`);
+            console.log(`Net Salary: KES ${netSalary.toFixed(2)}`);
+
+            rl.close();
+        });
+    });
 }
 
-const basicSalary = parseFloat(prompt("Enter the basic salary:"));
-const benefits = parseFloat(prompt("Enter the benefits:"));
-
-const results = calculateNetSalary(basicSalary, benefits);
-
-alert(`Gross Income: KES ${results.grossIncome.toFixed(2)}\n` +
-      `PAYE Tax: KES ${results.payeeTax.toFixed(2)}\n` +
-      `NHIF Deduction: KES ${results.nhifDeduction.toFixed(2)}\n` +
-      `NSSF Deduction: KES ${results.nssfDeduction.toFixed(2)}\n` +
-      `Net Salary: KES ${results.netSalary.toFixed(2)}`);
+calculateNetSalary();

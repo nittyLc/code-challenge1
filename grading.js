@@ -1,29 +1,37 @@
 
-function calculateGrade(mark) {
-    if (mark > 79) {
-      return 'A';
-    } else if (marks >= 60 && marks <= 79) {
-      return 'B';
-    } else if (marks >= 50 && marks <= 59) {
-      return 'C';
-    } else if (marks >= 40 && marks <= 49) {
-      return 'D';
-    } else {
-      return 'E';
-    }
-  }
-  
-  function studentGrade() {
-    const mark = parseFloat(prompt('Enter the student mark (0-100):'));
-  
-    if (isNaN(mark) || mark < 0 || mark > 100) {
-      return 'please enter mark between 0 and 100';
-    }
-  
-    const grade = calculateGrade(mark);
-    return `The student's grade is: ${grade}`;
-  }
-  
-  
-  console.log(studentGrade());
-  
+const readline = require('readline');
+
+const rl = readline.createInterface({
+    input: process.stdin,
+    output: process.stdout
+});
+
+function calculateGrade() {
+    rl.question("Enter the student's marks (0 to 100): ", (input) => {
+        const marks = parseFloat(input);
+
+        if (isNaN(marks) || marks < 0 || marks > 100) {
+            console.log("Invalid input. Please enter a number between 0 and 100.");
+            calculateGrade(); // Retry on invalid input
+        } else {
+            let grade;
+
+            if (marks > 79) {
+                grade = 'A';
+            } else if (marks >= 60 && marks <= 79) {
+                grade = 'B';
+            } else if (marks >= 50 && marks <= 59) {
+                grade = 'C';
+            } else if (marks >= 40 && marks <= 49) {
+                grade = 'D';
+            } else {
+                grade = 'E';
+            }
+
+            console.log(`The grade for marks ${marks} is: ${grade}`);
+            rl.close();
+        }
+    });
+}
+
+calculateGrade();
